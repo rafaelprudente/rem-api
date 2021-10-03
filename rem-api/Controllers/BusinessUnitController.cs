@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using rem_api.Models;
 using System.Linq;
@@ -10,12 +10,13 @@ namespace rem_api.Controllers
     [ApiController]
     public class BusinessUnitController : ControllerBase
     {
-        private IApplicationDbContext _context;
+        private readonly IApplicationDbContext _context;
 
-        public BusinessUnitController(IApplicationDbContext context)
+    public BusinessUnitController(IApplicationDbContext context)
         {
             _context = context;
         }
+
         [HttpPost]
         public async Task<IActionResult> Create(BusinessUnit businessUnit)
         {
@@ -23,6 +24,7 @@ namespace rem_api.Controllers
             await _context.SaveChanges();
             return Ok(businessUnit.Id);
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -30,6 +32,7 @@ namespace rem_api.Controllers
             if (businessUnits == null) return NotFound();
             return Ok(businessUnits);
         }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -37,6 +40,7 @@ namespace rem_api.Controllers
             if (businessUnit == null) return NotFound();
             return Ok(businessUnit);
         }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -46,6 +50,7 @@ namespace rem_api.Controllers
             await _context.SaveChanges();
             return Ok(businessUnit.Id);
         }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, BusinessUnit businessUnitUpdate)
         {
@@ -54,6 +59,9 @@ namespace rem_api.Controllers
             else
             {
                 businessUnit.Name = businessUnitUpdate.Name;
+                businessUnit.Address = businessUnitUpdate.Address;
+                businessUnit.Company = businessUnitUpdate.Company;
+
                 await _context.SaveChanges();
                 return Ok(businessUnit.Id);
             }

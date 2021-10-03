@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace rem_api.Models
 {
@@ -9,6 +6,8 @@ namespace rem_api.Models
     {
         public long Id { get; set; }
         public string Name { get; set; }
+
+        public Country Country { get; set; }
 
         public ICollection<City> Cities { get; set; }
     }
