@@ -21,10 +21,28 @@ namespace rem_api.Models
         public DbSet<CurrencyCode> CurrencyCodes { get; set; }
         public DbSet<State> States { get; set; }
         public DbSet<WorldRegion> WorldRegions { get; set; }
+        public DbSet<CountryCurrencyCode> CountryCurrencyCodes { get; set; }
 
         public async Task<int> SaveChanges()
         {
             return await base.SaveChangesAsync();
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<WorldRegion>()
+                .HasMany(c => c.Countries)
+                .WithOne(e => e.WorldRegion);
+            modelBuilder.Entity<CountryCurrencyCode>()
+                .HasKey(bc => new { bc.CountryId, bc.CurrencyCodeId });
+            modelBuilder.Entity<CountryCurrencyCode>()
+                .HasOne(bc => bc.Country)
+                .WithMany(b => b.CountryCurrencyCodes)
+                .HasForeignKey(bc => bc.CountryId);
+            modelBuilder.Entity<CountryCurrencyCode>()
+                .HasOne(bc => bc.CurrencyCode)
+                .WithMany(c => c.CountryCurrencyCodes)
+                .HasForeignKey(bc => bc.CurrencyCodeId);
         }
     }
 }

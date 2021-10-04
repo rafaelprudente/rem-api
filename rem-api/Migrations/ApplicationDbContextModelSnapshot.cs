@@ -134,6 +134,21 @@ namespace rem_api.Migrations
                     b.ToTable("Countries");
                 });
 
+            modelBuilder.Entity("rem_api.Models.CountryCurrencyCode", b =>
+                {
+                    b.Property<long>("CountryId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("CurrencyCodeId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("CountryId", "CurrencyCodeId");
+
+                    b.HasIndex("CurrencyCodeId");
+
+                    b.ToTable("CountryCurrencyCodes");
+                });
+
             modelBuilder.Entity("rem_api.Models.CurrencyCode", b =>
                 {
                     b.Property<long>("Id")
@@ -143,9 +158,6 @@ namespace rem_api.Migrations
 
                     b.Property<string>("CharacterCode")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<long?>("CountryId")
-                        .HasColumnType("bigint");
 
                     b.Property<int>("DecimalPlaces")
                         .HasColumnType("int");
@@ -157,8 +169,6 @@ namespace rem_api.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CountryId");
 
                     b.ToTable("CurrencyCodes");
                 });
@@ -230,11 +240,19 @@ namespace rem_api.Migrations
                         .HasForeignKey("WorldRegionId");
                 });
 
-            modelBuilder.Entity("rem_api.Models.CurrencyCode", b =>
+            modelBuilder.Entity("rem_api.Models.CountryCurrencyCode", b =>
                 {
-                    b.HasOne("rem_api.Models.Country", null)
-                        .WithMany("CurrencyCodes")
-                        .HasForeignKey("CountryId");
+                    b.HasOne("rem_api.Models.Country", "Country")
+                        .WithMany("CountryCurrencyCodes")
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("rem_api.Models.CurrencyCode", "CurrencyCode")
+                        .WithMany("CountryCurrencyCodes")
+                        .HasForeignKey("CurrencyCodeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("rem_api.Models.State", b =>

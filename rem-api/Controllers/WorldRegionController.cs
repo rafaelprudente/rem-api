@@ -36,7 +36,7 @@ namespace rem_api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var worldRegion = await _context.WorldRegions.Where(a => a.Id == id).FirstOrDefaultAsync();
+            var worldRegion = await _context.WorldRegions.Where(a => a.Id == id).Include(wr => wr.Countries).FirstOrDefaultAsync();
             if (worldRegion == null) return NotFound();
             return Ok(worldRegion);
         }

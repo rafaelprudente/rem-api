@@ -20,6 +20,22 @@ namespace rem_api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CurrencyCodes",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: true),
+                    CharacterCode = table.Column<string>(nullable: true),
+                    NumericCode = table.Column<int>(nullable: false),
+                    DecimalPlaces = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CurrencyCodes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "WorldRegions",
                 columns: table => new
                 {
@@ -54,26 +70,27 @@ namespace rem_api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CurrencyCodes",
+                name: "CountryCurrencyCodes",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CharacterCode = table.Column<string>(nullable: true),
-                    NumericCode = table.Column<int>(nullable: false),
-                    DecimalPlaces = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    CountryId = table.Column<long>(nullable: true)
+                    CountryId = table.Column<long>(nullable: false),
+                    CurrencyCodeId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CurrencyCodes", x => x.Id);
+                    table.PrimaryKey("PK_CountryCurrencyCodes", x => new { x.CountryId, x.CurrencyCodeId });
                     table.ForeignKey(
-                        name: "FK_CurrencyCodes_Countries_CountryId",
+                        name: "FK_CountryCurrencyCodes_Countries_CountryId",
                         column: x => x.CountryId,
                         principalTable: "Countries",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CountryCurrencyCodes_CurrencyCodes_CurrencyCodeId",
+                        column: x => x.CurrencyCodeId,
+                        principalTable: "CurrencyCodes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -193,9 +210,9 @@ namespace rem_api.Migrations
                 column: "WorldRegionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CurrencyCodes_CountryId",
-                table: "CurrencyCodes",
-                column: "CountryId");
+                name: "IX_CountryCurrencyCodes_CurrencyCodeId",
+                table: "CountryCurrencyCodes",
+                column: "CurrencyCodeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_States_CountryId",
@@ -209,13 +226,16 @@ namespace rem_api.Migrations
                 name: "BusinessUnits");
 
             migrationBuilder.DropTable(
-                name: "CurrencyCodes");
+                name: "CountryCurrencyCodes");
 
             migrationBuilder.DropTable(
                 name: "Addresses");
 
             migrationBuilder.DropTable(
                 name: "Companies");
+
+            migrationBuilder.DropTable(
+                name: "CurrencyCodes");
 
             migrationBuilder.DropTable(
                 name: "Cities");

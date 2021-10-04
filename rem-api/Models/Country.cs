@@ -11,6 +11,6 @@ namespace rem_api.Models
         public WorldRegion WorldRegion { get; set; }
 
         public ICollection<State> States { get; set; }
-        public ICollection<CurrencyCode> CurrencyCodes { get; set; }
+        public ICollection<CountryCurrencyCode> CountryCurrencyCodes { get; set; }
     }
 }

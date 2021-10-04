@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using rem_api.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,20 +23,29 @@ namespace rem_api.Controllers
         {
             var worldRegion = await _context.WorldRegions.Where(a => a.Id == country.WorldRegion.Id).FirstOrDefaultAsync();
             if (worldRegion == null) return NotFound(country.WorldRegion.Id);
-            country.WorldRegion = worldRegion;
 
-            foreach (CurrencyCode cc in country.CurrencyCodes.ToList())
+            List<CountryCurrencyCode> countryCurrencyCodesList = new List<CountryCurrencyCode>();
+            foreach (CountryCurrencyCode ccc in country.CountryCurrencyCodes.ToList())
             {
-                var currencyCode = await _context.CurrencyCodes.Where(a => a.Id == cc.Id).FirstOrDefaultAsync();
-                if (currencyCode == null) return NotFound();
+                var currencyCode = await _context.CurrencyCodes.Where(a => a.Id == ccc.CurrencyCodeId).FirstOrDefaultAsync();
+                if (currencyCode == null) return NotFound(ccc.CurrencyCodeId);
 
-                country.CurrencyCodes.Add(currencyCode);
-                await _context.SaveChanges();
+                countryCurrencyCodesList.Add(new CountryCurrencyCode { CurrencyCodeId = currencyCode.Id, CurrencyCode = currencyCode });
             }
 
-            _context.Countries.Add(country);
+            country.WorldRegion = worldRegion;
+            var dbCountry = _context.Countries.Add(country);
+            await _context.SaveChanges();
+
+            foreach (CountryCurrencyCode ccc in countryCurrencyCodesList)
+            {
+                ccc.CountryId = dbCountry.Entity.Id;
+                ccc.Country = dbCountry.Entity;
+            }
+            dbCountry.Entity.CountryCurrencyCodes = countryCurrencyCodesList;
 
             await _context.SaveChanges();
+
             return Ok(country.Id);
         }
 

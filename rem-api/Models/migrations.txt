@@ -1,7 +1,0 @@
-﻿Add-Migration realizará o scaffolding da próxima migração com base nas alterações feitas no modelo desde a criação da última migração
-
-add-migration InitDatabase
-
-Update-Database aplicará quaisquer migrações pendentes ao banco de dados
-
-Update-Database
