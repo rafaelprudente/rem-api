@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using rem_api.Models;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,31 +20,13 @@ namespace rem_api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Country country)
         {
-            var worldRegion = await _context.WorldRegions.Where(a => a.Id == country.WorldRegion.Id).FirstOrDefaultAsync();
-            if (worldRegion == null) return NotFound(country.WorldRegion.Id);
-
-            List<CountryCurrencyCode> countryCurrencyCodesList = new List<CountryCurrencyCode>();
-            foreach (CountryCurrencyCode ccc in country.CountryCurrencyCodes.ToList())
-            {
-                var currencyCode = await _context.CurrencyCodes.Where(a => a.Id == ccc.CurrencyCodeId).FirstOrDefaultAsync();
-                if (currencyCode == null) return NotFound(ccc.CurrencyCodeId);
-
-                countryCurrencyCodesList.Add(new CountryCurrencyCode { CurrencyCodeId = currencyCode.Id, CurrencyCode = currencyCode });
-            }
+            var worldRegion = await _context.WorldRegions.Where(a => country.WorldRegion.Id.Equals(a.Id)).FirstOrDefaultAsync();
+            if (worldRegion == null) return NotFound();
 
             country.WorldRegion = worldRegion;
-            var dbCountry = _context.Countries.Add(country);
+
+            _context.Countries.Add(country);
             await _context.SaveChanges();
-
-            foreach (CountryCurrencyCode ccc in countryCurrencyCodesList)
-            {
-                ccc.CountryId = dbCountry.Entity.Id;
-                ccc.Country = dbCountry.Entity;
-            }
-            dbCountry.Entity.CountryCurrencyCodes = countryCurrencyCodesList;
-
-            await _context.SaveChanges();
-
             return Ok(country.Id);
         }
 
@@ -58,17 +39,41 @@ namespace rem_api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(long id)
         {
-            var country = await _context.Countries.Where(a => a.Id == id).FirstOrDefaultAsync();
+            var country = await _context.Countries.Where(a => id.Equals(a.Id)).FirstOrDefaultAsync();
             if (country == null) return NotFound();
             return Ok(country);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpGet("{name}")]
+        public async Task<IActionResult> GetByName(string name)
         {
-            var country = await _context.Countries.Where(a => a.Id == id).FirstOrDefaultAsync();
+            var country = await _context.Countries.Where(a => name.Equals(a.Name)).FirstOrDefaultAsync();
+            if (country == null) return NotFound();
+            return Ok(country);
+        }
+
+        [HttpGet("{id}/States")]
+        public async Task<IActionResult> GetStates(long id)
+        {
+            var country = await _context.Countries.Where(a => id.Equals(a.Id)).FirstOrDefaultAsync();
+            if (country == null) return NotFound();
+            return Ok(country.States);
+        }
+
+        [HttpGet("{id}/CountryCurrencyCodes")]
+        public async Task<IActionResult> GetCountryCurrencyCodes(long id)
+        {
+            var country = await _context.Countries.Where(a => id.Equals(a.Id)).FirstOrDefaultAsync();
+            if (country == null) return NotFound();
+            return Ok(country.CountryCurrencyCodes);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(long id)
+        {
+            var country = await _context.Countries.Where(a => id.Equals(a.Id)).FirstOrDefaultAsync();
             if (country == null) return NotFound();
             _context.Countries.Remove(country);
             await _context.SaveChanges();
@@ -76,9 +81,9 @@ namespace rem_api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Country countryUpdate)
+        public async Task<IActionResult> Update(long id, Country countryUpdate)
         {
-            var country = _context.Countries.Where(a => a.Id == id).FirstOrDefault();
+            var country = _context.Countries.Where(a => id.Equals(a.Id)).FirstOrDefault();
             if (country == null) return NotFound();
             else
             {

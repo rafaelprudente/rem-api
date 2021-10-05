@@ -29,6 +29,22 @@ function Add-CurrencyCode([string]$name, [string]$characterCode, [long]$numericC
     Invoke-RestMethod @Params
 }
 
+function Add-Country([string]$name, [double]$netToGrossRatio, [long]$worldRegion) {
+    $WorldRegionObject = @{ id = $worldRegion }
+
+    $Body = @{ name = $name 
+               netToGrossRatio = $netToGrossRatio 
+               worldRegion = $WorldRegionObject }
+    $JsonBody = $Body | ConvertTo-Json
+    $Params = @{
+        Method = "Post"
+        Uri = "$baseUri/api/Country"
+        Body = $JsonBody 
+        ContentType = "application/json"
+    }
+    Invoke-RestMethod @Params
+}
+
 Add-WorldRegion "Africa"
 Add-WorldRegion "Asia"
 Add-WorldRegion "Central America"
@@ -198,3 +214,19 @@ Add-CurrencyCode "Ukrainian Hryvnia" "UAH" 980 2
 Add-CurrencyCode "Georgian Lari" "GEL" 981 2
 Add-CurrencyCode "Polish Złoty" "PLN" 985 2
 Add-CurrencyCode "Brazilian Real" "BRL" 986 2
+
+Write-Host
+
+Add-Country "Argentina" 20.0 9
+Add-Country "Bolivia" 20.0 9
+Add-Country "Brazil" 20.0 9
+Add-Country "Chile" 20.0 9
+Add-Country "Colombia" 20.0 9
+Add-Country "Ecuador" 20.0 9
+Add-Country "French Guiana" 20.0 9
+Add-Country "Guyana" 20.0 9
+Add-Country "Paraguay" 20.0 9
+Add-Country "Peru" 20.0 9
+Add-Country "Suriname" 20.0 9
+Add-Country "Uruguay" 20.0 9
+Add-Country "Venezuela" 20.0 9

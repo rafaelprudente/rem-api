@@ -13,57 +13,67 @@ namespace rem_api.Controllers
         private readonly IApplicationDbContext _context;
 
     public CityController(IApplicationDbContext context)
-        {
-            _context = context;
-        }
+    {
+        _context = context;
+    }
 
-        [HttpPost]
-        public async Task<IActionResult> Create(City city)
-        {
-            _context.Cities.Add(city);
-            await _context.SaveChanges();
-            return Ok(city.Id);
-        }
+    [HttpPost]
+    public async Task<IActionResult> Create(City city)
+    {
+        _context.Cities.Add(city);
+        await _context.SaveChanges();
+        return Ok(city.Id);
+    }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var cities = await _context.Cities.ToListAsync();
-            if (cities == null) return NotFound();
-            return Ok(cities);
-        }
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var cities = await _context.Cities.ToListAsync();
+        if (cities == null) return NotFound();
+        return Ok(cities);
+    }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
-        {
-            var city = await _context.Cities.Where(a => a.Id == id).FirstOrDefaultAsync();
-            if (city == null) return NotFound();
-            return Ok(city);
-        }
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(long id)
+    {
+        var city = await _context.Cities.Where(a => id.Equals(a.Id)).FirstOrDefaultAsync();
+        if (city == null) return NotFound();
+        return Ok(city);
+    }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var city = await _context.Cities.Where(a => a.Id == id).FirstOrDefaultAsync();
-            if (city == null) return NotFound();
-            _context.Cities.Remove(city);
-            await _context.SaveChanges();
-            return Ok(city.Id);
-        }
+    [HttpGet("{name}")]
+    public async Task<IActionResult> GetByName(string name)
+    {
+        var city = await _context.Cities.Where(a => name.Equals(a.Name)).FirstOrDefaultAsync();
+        if (city == null) return NotFound();
+        return Ok(city);
+    }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, City cityUpdate)
+
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(long id)
+    {
+        var city = await _context.Cities.Where(a => id.Equals(a.Id)).FirstOrDefaultAsync();
+        if (city == null) return NotFound();
+        _context.Cities.Remove(city);
+        await _context.SaveChanges();
+        return Ok(city.Id);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(long id, City cityUpdate)
+    {
+        var city = _context.Cities.Where(a => id.Equals(a.Id)).FirstOrDefault();
+        if (city == null) return NotFound();
+        else
         {
-            var city = _context.Cities.Where(a => a.Id == id).FirstOrDefault();
-            if (city == null) return NotFound();
-            else
-            {
                 city.Name = cityUpdate.Name;
                 city.State = cityUpdate.State;
 
-                await _context.SaveChanges();
-                return Ok(city.Id);
-            }
+            await _context.SaveChanges();
+            return Ok(city.Id);
         }
     }
+}
 }

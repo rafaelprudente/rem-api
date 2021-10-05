@@ -13,56 +13,72 @@ namespace rem_api.Controllers
         private readonly IApplicationDbContext _context;
 
     public WorldRegionController(IApplicationDbContext context)
-        {
-            _context = context;
-        }
+    {
+        _context = context;
+    }
 
-        [HttpPost]
-        public async Task<IActionResult> Create(WorldRegion worldRegion)
-        {
-            _context.WorldRegions.Add(worldRegion);
-            await _context.SaveChanges();
-            return Ok(worldRegion.Id);
-        }
+    [HttpPost]
+    public async Task<IActionResult> Create(WorldRegion worldRegion)
+    {
+        _context.WorldRegions.Add(worldRegion);
+        await _context.SaveChanges();
+        return Ok(worldRegion.Id);
+    }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var worldRegions = await _context.WorldRegions.ToListAsync();
-            if (worldRegions == null) return NotFound();
-            return Ok(worldRegions);
-        }
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var worldRegions = await _context.WorldRegions.ToListAsync();
+        if (worldRegions == null) return NotFound();
+        return Ok(worldRegions);
+    }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
-        {
-            var worldRegion = await _context.WorldRegions.Where(a => a.Id == id).Include(wr => wr.Countries).FirstOrDefaultAsync();
-            if (worldRegion == null) return NotFound();
-            return Ok(worldRegion);
-        }
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(long id)
+    {
+        var worldRegion = await _context.WorldRegions.Where(a => id.Equals(a.Id)).FirstOrDefaultAsync();
+        if (worldRegion == null) return NotFound();
+        return Ok(worldRegion);
+    }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var worldRegion = await _context.WorldRegions.Where(a => a.Id == id).FirstOrDefaultAsync();
-            if (worldRegion == null) return NotFound();
-            _context.WorldRegions.Remove(worldRegion);
-            await _context.SaveChanges();
-            return Ok(worldRegion.Id);
-        }
+    [HttpGet("{name}")]
+    public async Task<IActionResult> GetByName(string name)
+    {
+        var worldRegion = await _context.WorldRegions.Where(a => name.Equals(a.Name)).FirstOrDefaultAsync();
+        if (worldRegion == null) return NotFound();
+        return Ok(worldRegion);
+    }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, WorldRegion worldRegionUpdate)
+    [HttpGet("{id}/Countries")]
+    public async Task<IActionResult> GetCountries(long id)
+    {
+        var worldRegion = await _context.WorldRegions.Where(a => id.Equals(a.Id)).FirstOrDefaultAsync();
+        if (worldRegion == null) return NotFound();
+        return Ok(worldRegion.Countries);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(long id)
+    {
+        var worldRegion = await _context.WorldRegions.Where(a => id.Equals(a.Id)).FirstOrDefaultAsync();
+        if (worldRegion == null) return NotFound();
+        _context.WorldRegions.Remove(worldRegion);
+        await _context.SaveChanges();
+        return Ok(worldRegion.Id);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(long id, WorldRegion worldRegionUpdate)
+    {
+        var worldRegion = _context.WorldRegions.Where(a => id.Equals(a.Id)).FirstOrDefault();
+        if (worldRegion == null) return NotFound();
+        else
         {
-            var worldRegion = _context.WorldRegions.Where(a => a.Id == id).FirstOrDefault();
-            if (worldRegion == null) return NotFound();
-            else
-            {
                 worldRegion.Name = worldRegionUpdate.Name;
 
-                await _context.SaveChanges();
-                return Ok(worldRegion.Id);
-            }
+            await _context.SaveChanges();
+            return Ok(worldRegion.Id);
         }
     }
+}
 }
