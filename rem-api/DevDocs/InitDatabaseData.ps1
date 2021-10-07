@@ -45,6 +45,18 @@ function Add-Country([string]$name, [double]$netToGrossRatio, [long]$worldRegion
     Invoke-RestMethod @Params
 }
 
+function Add-Company([string]$name) {
+    $Body = @{ name = $name }
+    $JsonBody = $Body | ConvertTo-Json
+    $Params = @{
+        Method = "Post"
+        Uri = "$baseUri/api/Company"
+        Body = $JsonBody 
+        ContentType = "application/json"
+    }
+    Invoke-RestMethod @Params
+}
+
 Add-WorldRegion "Africa"
 Add-WorldRegion "Asia"
 Add-WorldRegion "Central America"
@@ -230,3 +242,7 @@ Add-Country "Peru" 20.0 9
 Add-Country "Suriname" 20.0 9
 Add-Country "Uruguay" 20.0 9
 Add-Country "Venezuela" 20.0 9
+
+Write-Host
+
+Add-Company "Test Company"

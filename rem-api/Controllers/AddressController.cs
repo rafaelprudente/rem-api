@@ -63,7 +63,7 @@ namespace rem_api.Controllers
         else
         {
                 address.City = addressUpdate.City;
-                address.ZipCode = addressUpdate.ZipCode;
+                address.PostalCode = addressUpdate.PostalCode;
                 address.Number = addressUpdate.Number;
                 address.Line1 = addressUpdate.Line1;
                 address.Line2 = addressUpdate.Line2;

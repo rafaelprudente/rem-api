@@ -7,12 +7,16 @@ DBCC CHECKIDENT ('CurrencyCodes', RESEED, 0)
 GO
 DBCC CHECKIDENT ('Countries', RESEED, 0)
 GO
+DBCC CHECKIDENT ('Companies', RESEED, 0)
+GO
 
 DELETE FROM [dbo].[WorldRegions]
 GO
 DELETE FROM [dbo].[CurrencyCodes]
 GO
 DELETE FROM [dbo].[Countries]
+GO
+DELETE FROM [dbo].[Companies]
 GO
 
 -------------- DROP TABLES --------------

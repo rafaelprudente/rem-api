@@ -140,11 +140,17 @@ namespace rem_api.Migrations
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CityId = table.Column<long>(nullable: true),
-                    ZipCode = table.Column<string>(nullable: true),
+                    PostalCode = table.Column<string>(nullable: true),
                     Number = table.Column<string>(nullable: true),
                     Line1 = table.Column<string>(nullable: true),
                     Line2 = table.Column<string>(nullable: true),
-                    Line3 = table.Column<string>(nullable: true)
+                    Line3 = table.Column<string>(nullable: true),
+                    Line4 = table.Column<string>(nullable: true),
+                    Line5 = table.Column<string>(nullable: true),
+                    Line6 = table.Column<string>(nullable: true),
+                    Line7 = table.Column<string>(nullable: true),
+                    Line8 = table.Column<string>(nullable: true),
+                    Line9 = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

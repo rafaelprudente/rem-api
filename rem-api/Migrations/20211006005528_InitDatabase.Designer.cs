@@ -10,7 +10,7 @@ using rem_api.Models;
 namespace rem_api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211004054610_InitDatabase")]
+    [Migration("20211006005528_InitDatabase")]
     partial class InitDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,10 +40,28 @@ namespace rem_api.Migrations
                     b.Property<string>("Line3")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Line4")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Line5")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Line6")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Line7")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Line8")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Line9")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Number")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ZipCode")
+                    b.Property<string>("PostalCode")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
